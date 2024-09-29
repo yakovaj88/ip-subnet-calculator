@@ -1,21 +1,27 @@
-# Используем официальный образ Python в качестве базового
-FROM python:3.9-slim
+# Dockerfile.test
 
-# Устанавливаем Git
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+# Используем официальный образ Python
+FROM python:3.9-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
+# Устанавливаем системные зависимости (если необходимо)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 # Копируем файлы и устанавливаем зависимости
-COPY requirements.txt /app
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
-
-ENV PYTHONUNBUFFERED=1
+# Копируем весь проект
+COPY . /app/
 
 # Запускаем тесты во время сборки
 RUN python -m unittest discover -s tests
 
-CMD ["python", "app.py"]
+# Удаляем ненужные зависимости после тестирования (опционально)
+RUN apt-get purge -y build-essential && apt-get autoremove -y
+
+# Нет команды CMD, так как этот Dockerfile предназначен только для тестирования

@@ -1,8 +1,19 @@
-# Файлы и папки, которые нужно игнорировать
+# Python
 __pycache__/
-*.pyc
-.DS_Store
-.env
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+app.spec
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDEs
 .vscode/
 .idea/
-*.log

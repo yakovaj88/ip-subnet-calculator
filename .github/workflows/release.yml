@@ -1,0 +1,87 @@
+# .github/workflows/release.yml
+name: Create Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # Укажите версию Python, соответствующую вашему проекту
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      - name: Build Executable with PyInstaller
+        run: |
+          pyinstaller --onefile app.py
+        shell: bash  # Для macOS и Ubuntu; для Windows может потребоваться другой shell
+
+      - name: Rename Executable
+        run: |
+          case "${{ matrix.os }}" in
+            "Windows")
+              mv dist/app.exe "dist/IP Subnet Calculator.exe"
+              ;;
+            "macOS"|"Ubuntu")
+              mv dist/app "dist/IP Subnet Calculator"
+              chmod +x "dist/IP Subnet Calculator"
+              ;;
+          esac
+        shell: bash
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "IP Subnet Calculator-${{ matrix.os }}"
+          path: |
+            dist/IP Subnet Calculator.exe
+            dist/IP Subnet Calculator
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: "IP Subnet Calculator-windows-latest"
+          path: artifacts/windows
+
+      - name: Download Artifacts macOS
+        uses: actions/download-artifact@v3
+        with:
+          name: "IP Subnet Calculator-macos-latest"
+          path: artifacts/macos
+
+      - name: Download Artifacts Ubuntu
+        uses: actions/download-artifact@v3
+        with:
+          name: "IP Subnet Calculator-ubuntu-latest"
+          path: artifacts/ubuntu
+
+      - name: Upload Assets to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/windows/dist/IP Subnet Calculator.exe
+            artifacts/macos/dist/IP Subnet Calculator
+            artifacts/ubuntu/dist/IP Subnet Calculator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: pyinstaller --onefile app.py
-        # Удаляем shell: bash, чтобы использовать стандартный shell для каждой ОС
+        # Убираем shell: bash, чтобы использовать стандартный shell для каждой ОС
 
       - name: Rename Executable for Windows
         if: runner.os == 'Windows'

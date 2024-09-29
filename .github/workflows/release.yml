@@ -20,6 +20,11 @@ jobs:
         with:
           python-version: '3.9'  # Укажите вашу версию Python
 
+      - name: Clean dist Directory
+        run: |
+          rm -rf dist/
+        shell: bash
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -37,11 +42,19 @@ jobs:
         run: |
           Rename-Item -Path dist\app.exe -NewName "IP_Subnet_Calculator.exe"
 
-      - name: Rename Executable for macOS and Ubuntu
-        if: runner.os != 'Windows'
+      - name: Rename Executable for macOS
+        if: matrix.os == 'macos-latest'
         run: |
           mv dist/app "IP_Subnet_Calculator"
           chmod +x "IP_Subnet_Calculator"
+        shell: bash
+
+      - name: Rename Executable for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mv dist/app "IP_Subnet_Calculator"
+          chmod +x "IP_Subnet_Calculator"
+        shell: bash
 
       - name: List dist Directory
         run: |

@@ -30,19 +30,23 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: pyinstaller --onefile app.py
-        # Убираем shell: bash, чтобы использовать стандартный shell для каждой ОС
 
       - name: Rename Executable for Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Rename-Item -Path dist\app.exe -NewName "IP Subnet Calculator.exe"
+          Rename-Item -Path dist\app.exe -NewName "IP_Subnet_Calculator.exe"
 
       - name: Rename Executable for macOS and Ubuntu
         if: runner.os != 'Windows'
         run: |
-          mv dist/app "IP Subnet Calculator"
-          chmod +x "IP Subnet Calculator"
+          mv dist/app "IP_Subnet_Calculator"
+          chmod +x "IP_Subnet_Calculator"
+
+      - name: List dist Directory
+        run: |
+          echo "Listing contents of dist/:"
+          ls -la dist/
         shell: bash
 
       - name: Upload Artifact
@@ -50,8 +54,8 @@ jobs:
         with:
           name: "IP_Subnet_Calculator-${{ matrix.os }}"
           path: |
-            dist/IP Subnet Calculator.exe
-            dist/IP Subnet Calculator
+            dist/IP_Subnet_Calculator.exe
+            dist/IP_Subnet_Calculator
 
   upload-release:
     needs: build
@@ -79,8 +83,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/windows/dist/IP Subnet Calculator.exe
-            artifacts/macos/dist/IP Subnet Calculator
-            artifacts/ubuntu/dist/IP Subnet Calculator
+            artifacts/windows/IP_Subnet_Calculator.exe
+            artifacts/macos/IP_Subnet_Calculator
+            artifacts/ubuntu/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

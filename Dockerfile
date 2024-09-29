@@ -1,14 +1,21 @@
 # Используем официальный образ Python в качестве базового
 FROM python:3.9-slim
 
-# Устанавливаем рабочую директорию в контейнере
+# Устанавливаем Git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем все файлы в рабочую директорию
+# Копируем файлы и устанавливаем зависимости
+COPY requirements.txt /app
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . /app
 
-# Устанавливаем переменную окружения для Python
 ENV PYTHONUNBUFFERED=1
 
-# Определяем команду запуска приложения
+# Запускаем тесты во время сборки
+RUN python -m unittest discover -s tests
+
 CMD ["python", "app.py"]

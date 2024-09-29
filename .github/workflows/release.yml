@@ -35,10 +35,15 @@ jobs:
 
       - name: Build Executable with PyInstaller
         run: pyinstaller --onefile app.py
-        shell: bash  # Для macOS и Ubuntu; для Windows это автоматически используется
+        shell: bash  # Используется для macOS и Ubuntu
 
       - name: List Dist Directory
-        run: ls -la dist
+        run: |
+          if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
+            ls -la dist
+          elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
+            Get-ChildItem dist
+          fi
 
       - name: Rename Executable
         run: |

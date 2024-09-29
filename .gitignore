@@ -1,0 +1,8 @@
+# Файлы и папки, которые нужно игнорировать
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.vscode/
+.idea/
+*.log

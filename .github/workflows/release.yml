@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -42,15 +42,8 @@ jobs:
         run: |
           Rename-Item -Path dist\app.exe -NewName "IP_Subnet_Calculator.exe"
 
-      - name: Rename Executable for macOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          mv dist/app "IP_Subnet_Calculator"
-          chmod +x "IP_Subnet_Calculator"
-        shell: bash
-
       - name: Rename Executable for Ubuntu
-        if: matrix.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: |
           mv dist/app "IP_Subnet_Calculator"
           chmod +x "IP_Subnet_Calculator"
@@ -69,13 +62,6 @@ jobs:
           name: "IP_Subnet_Calculator-windows-latest"
           path: dist/IP_Subnet_Calculator.exe
 
-      - name: Upload Artifact for macOS
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v3
-        with:
-          name: "IP_Subnet_Calculator-macos-latest"
-          path: dist/IP_Subnet_Calculator
-
       - name: Upload Artifact for Ubuntu
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v3
@@ -93,12 +79,6 @@ jobs:
           name: "IP_Subnet_Calculator-windows-latest"
           path: artifacts/windows
 
-      - name: Download macOS Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: "IP_Subnet_Calculator-macos-latest"
-          path: artifacts/macos
-
       - name: Download Ubuntu Artifact
         uses: actions/download-artifact@v3
         with:
@@ -110,7 +90,6 @@ jobs:
         with:
           files: |
             artifacts/windows/IP_Subnet_Calculator.exe
-            artifacts/macos/IP_Subnet_Calculator
             artifacts/ubuntu/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

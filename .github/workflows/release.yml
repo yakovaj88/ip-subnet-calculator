@@ -85,3 +85,23 @@ jobs:
             artifacts/ubuntu/dist/IP Subnet Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GNU nano 8.2             .github/workflows/release.yml
+        with:
+          name: "IP Subnet Calculator-macos-latest"
+          path: artifacts/macos
+
+      - name: Download Artifacts Ubuntu
+        uses: actions/download-artifact@v3
+        with:
+          name: "IP Subnet Calculator-ubuntu-latest"
+          path: artifacts/ubuntu
+
+      - name: Upload Assets to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/windows/dist/IP Subnet Calculator.exe
+            artifacts/macos/dist/IP Subnet Calculator
+            artifacts/ubuntu/dist/IP Subnet Calculator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

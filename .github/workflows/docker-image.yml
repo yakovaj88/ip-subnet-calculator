@@ -28,5 +28,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: yakovaj88/ip-subnet-calculator:latest
+        tags: vestinv/ip-subnet-calculator:latest
 

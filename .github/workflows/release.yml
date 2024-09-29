@@ -28,62 +28,29 @@ jobs:
       - name: Install PyInstaller
         run: pip install pyinstaller
 
-      # Специальные зависимости для Ubuntu
-      - name: Install Dependencies for Ubuntu
+      - name: Build Executable for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          pyinstaller --onefile app.py
+          mv dist/app.exe "dist/IP_Subnet_Calculator.exe"
+
+      - name: Build Executable for Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libglib2.0-dev libgirepository1.0-dev
-
-      - name: Build Executable with PyInstaller
-        run: pyinstaller --onefile app.py
-        shell: bash  # Используется для macOS и Ubuntu
-
-      - name: List Dist Directory
         run: |
-          if [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            ls -la dist
-          elif [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            Get-ChildItem dist
-          fi
+          pyinstaller --onefile app.py
+          mv dist/app "dist/IP_Subnet_Calculator"
+          chmod +x dist/IP_Subnet_Calculator
 
-      - name: Rename Executable
-        run: |
-          if [[ "${{ matrix.os }}" == 'windows-latest' ]]; then
-            mv dist/app.exe "dist/IP_Subnet_Calculator.exe"
-          elif [[ "${{ matrix.os }}" == 'ubuntu-latest' ]]; then
-            mv dist/app "dist/IP_Subnet_Calculator"
-            chmod +x "dist/IP_Subnet_Calculator"
-          fi
-        shell: bash
-
-      - name: Upload Artifact
+      - name: Upload Artifact for Windows
+        if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v3
         with:
-          name: "IP_Subnet_Calculator-${{ matrix.os }}"
-          path: |
-            dist/IP_Subnet_Calculator.exe
-            dist/IP_Subnet_Calculator
+          name: IP_Subnet_Calculator-windows-latest
+          path: dist/IP_Subnet_Calculator.exe
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Windows Artifact
-        uses: actions/download-artifact@v3
+      - name: Upload Artifact for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v3
         with:
-          name: "IP_Subnet_Calculator-windows-latest"
-          path: artifacts/windows
-
-      - name: Download Ubuntu Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: "IP_Subnet_Calculator-ubuntu-latest"
-          path: artifacts/ubuntu
-
-      - name: Upload Assets to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            artifacts/windows/IP_Subnet_Calculator.exe
-            artifacts/ubuntu/IP_Subnet_Calculator
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: IP_Subnet_Calculator-ubuntu-latest
+          path: dist/IP_Subnet_Calculator

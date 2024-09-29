@@ -64,3 +64,28 @@ jobs:
         with:
           name: IP_Subnet_Calculator-ubuntu-latest
           path: dist/IP_Subnet_Calculator
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: IP_Subnet_Calculator-windows-latest
+          path: artifacts/windows
+
+      - name: Download Ubuntu Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: IP_Subnet_Calculator-ubuntu-latest
+          path: artifacts/ubuntu
+
+      - name: Upload Assets to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/windows/IP_Subnet_Calculator.exe
+            artifacts/ubuntu/IP_Subnet_Calculator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

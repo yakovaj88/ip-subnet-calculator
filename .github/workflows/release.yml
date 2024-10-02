@@ -126,13 +126,13 @@ jobs:
           ls -la artifacts/macos
 
       - name: Create GitHub Release and Upload Assets
-        uses: ncipollo/release-action@v1
+        uses: softprops/action-gh-release@v1.3.0
         with:
-          tag: ${{ github.event.release.tag_name }}
-          name: ${{ github.event.release.name }}
+          body: "Automated release with build artifacts."
           files: |
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator
             artifacts/macos/IP_Subnet_Calculator
+          allowUpdates: true
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

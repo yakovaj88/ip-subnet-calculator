@@ -35,10 +35,10 @@ jobs:
 
       - name: Build Executable for Windows
         if: matrix.os == 'windows-latest'
-        shell: bash
+        shell: pwsh
         run: |
           pyinstaller --onefile app.py
-          mv dist/app.exe dist/IP_Subnet_Calculator.exe
+          Rename-Item -Path dist\app.exe -NewName IP_Subnet_Calculator.exe
 
       - name: Build Executable for Ubuntu
         if: matrix.os == 'ubuntu-latest'
@@ -56,10 +56,10 @@ jobs:
 
       - name: List files in dist for Windows
         if: matrix.os == 'windows-latest'
-        shell: bash
+        shell: pwsh
         run: |
-          echo "Artifacts for Windows:"
-          ls -la dist
+          Write-Output "Artifacts for Windows:"
+          Get-ChildItem dist
 
       - name: List files in dist for Ubuntu
         if: matrix.os == 'ubuntu-latest'

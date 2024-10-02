@@ -117,14 +117,10 @@ jobs:
           echo "macOS Artifacts:"
           ls -la artifacts/macos
 
-      - name: Get Release ID
-        id: get_release
-        run: echo "release_id=$(jq --raw-output .release.id $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
-
       - name: Upload Assets to Release
         uses: softprops/action-gh-release@v1
         with:
-          release_id: ${{ steps.get_release.outputs.release_id }}
+          tag_name: ${{ github.event.release.tag_name }}
           files: |
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator

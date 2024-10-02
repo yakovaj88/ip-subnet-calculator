@@ -28,6 +28,11 @@ jobs:
       - name: Install PyInstaller
         run: pip install pyinstaller
 
+      # Специальные зависимости для Ubuntu
+      - name: Install Dependencies for Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libglib2.0-dev libgirepository1.0-dev
+
       - name: Build Executable for Windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -50,18 +55,15 @@ jobs:
 
       - name: List files in dist for Windows
         if: matrix.os == 'windows-latest'
-        run: |
-          dir dist
+        run: dir dist
 
       - name: List files in dist for Ubuntu
         if: matrix.os == 'ubuntu-latest'
-        run: |
-          ls -la dist
+        run: ls -la dist
 
       - name: List files in dist for macOS
         if: matrix.os == 'macos-latest'
-        run: |
-          ls -la dist
+        run: ls -la dist
 
       - name: Upload Artifact for Windows
         if: matrix.os == 'windows-latest'
@@ -106,7 +108,16 @@ jobs:
           name: IP_Subnet_Calculator-macos-latest
           path: artifacts/macos
 
-      - name: Create GitHub Release
+      - name: List Downloaded Artifacts
+        run: |
+          echo "Windows Artifacts:"
+          ls -la artifacts/windows
+          echo "Ubuntu Artifacts:"
+          ls -la artifacts/ubuntu
+          echo "macOS Artifacts:"
+          ls -la artifacts/macos
+
+      - name: Upload Assets to Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -114,4 +125,4 @@ jobs:
             artifacts/ubuntu/IP_Subnet_Calculator
             artifacts/macos/IP_Subnet_Calculator
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

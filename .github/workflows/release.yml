@@ -117,10 +117,10 @@ jobs:
           echo "macOS Artifacts:"
           ls -la artifacts/macos
 
-      - name: Upload Assets to Release
-        uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release and Upload Assets
+        uses: ncipollo/release-action@v1
         with:
-          files: |
+          artifacts: |
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator
             artifacts/macos/IP_Subnet_Calculator

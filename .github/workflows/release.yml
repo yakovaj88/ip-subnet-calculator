@@ -42,21 +42,21 @@ jobs:
         shell: pwsh
         run: |
           pyinstaller --onefile app.py
-          Rename-Item -Path dist\app.exe -NewName IP_Subnet_Calculator.exe
+          Rename-Item -Path dist\app.exe -NewName IP_Subnet_Calculator_windows.exe
 
       - name: Build Executable for Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
           pyinstaller --onefile app.py
-          mv dist/app dist/IP_Subnet_Calculator
-          chmod +x dist/IP_Subnet_Calculator
+          mv dist/app dist/IP_Subnet_Calculator_linux
+          chmod +x dist/IP_Subnet_Calculator_linux
 
       - name: Build Executable for macOS
         if: matrix.os == 'macos-latest'
         run: |
           pyinstaller --onefile app.py
-          mv dist/app dist/IP_Subnet_Calculator
-          chmod +x dist/IP_Subnet_Calculator
+          mv dist/app dist/IP_Subnet_Calculator_macos
+          chmod +x dist/IP_Subnet_Calculator_macos
 
       - name: List files in dist for Windows
         if: matrix.os == 'windows-latest'
@@ -81,22 +81,22 @@ jobs:
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v3
         with:
-          name: IP_Subnet_Calculator-windows-latest
-          path: dist/IP_Subnet_Calculator.exe
+          name: IP_Subnet_Calculator-windows
+          path: dist/IP_Subnet_Calculator_windows.exe
 
       - name: Upload Artifact for Ubuntu
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v3
         with:
-          name: IP_Subnet_Calculator-ubuntu-latest
-          path: dist/IP_Subnet_Calculator
+          name: IP_Subnet_Calculator-linux
+          path: dist/IP_Subnet_Calculator_linux
 
       - name: Upload Artifact for macOS
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v3
         with:
-          name: IP_Subnet_Calculator-macos-latest
-          path: dist/IP_Subnet_Calculator
+          name: IP_Subnet_Calculator-macos
+          path: dist/IP_Subnet_Calculator_macos
 
   release:
     needs: build
@@ -105,19 +105,19 @@ jobs:
       - name: Download Windows Artifact
         uses: actions/download-artifact@v3
         with:
-          name: IP_Subnet_Calculator-windows-latest
+          name: IP_Subnet_Calculator-windows
           path: artifacts/windows
 
       - name: Download Ubuntu Artifact
         uses: actions/download-artifact@v3
         with:
-          name: IP_Subnet_Calculator-ubuntu-latest
+          name: IP_Subnet_Calculator-linux
           path: artifacts/ubuntu
 
       - name: Download macOS Artifact
         uses: actions/download-artifact@v3
         with:
-          name: IP_Subnet_Calculator-macos-latest
+          name: IP_Subnet_Calculator-macos
           path: artifacts/macos
 
       - name: List Downloaded Artifacts
@@ -133,7 +133,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}  # Динамический тег
-          files: artifacts/windows/IP_Subnet_Calculator.exe
+          files: artifacts/windows/IP_Subnet_Calculator_windows.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -141,7 +141,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: artifacts/ubuntu/IP_Subnet_Calculator
+          files: artifacts/ubuntu/IP_Subnet_Calculator_linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -149,6 +149,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: artifacts/macos/IP_Subnet_Calculator
+          files: artifacts/macos/IP_Subnet_Calculator_macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

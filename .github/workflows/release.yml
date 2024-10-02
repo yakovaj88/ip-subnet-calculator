@@ -117,10 +117,15 @@ jobs:
           echo "macOS Artifacts:"
           ls -la artifacts/macos
 
-      - name: Create GitHub Release and Upload Assets
-        uses: ncipollo/release-action@v1
+      - name: Get Release ID
+        id: get_release
+        run: echo "release_id=$(jq --raw-output .release.id $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
+
+      - name: Upload Assets to Release
+        uses: softprops/action-gh-release@v1
         with:
-          artifacts: |
+          release_id: ${{ steps.get_release.outputs.release_id }}
+          files: |
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator
             artifacts/macos/IP_Subnet_Calculator

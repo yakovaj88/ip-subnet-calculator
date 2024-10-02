@@ -3,7 +3,7 @@ name: Create Release
 on:
   push:
     tags:
-      - "v*.*.*"  # Триггер на пуш тегов вида v1.0.22
+      - "v*.*.*"  # Триггер на пуш тегов вида v1.0.8, v1.0.9 и т.д.
 
 permissions:
   contents: write
@@ -132,7 +132,7 @@ jobs:
       - name: Upload Windows Artifact to Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}  # Динамический тег
           files: artifacts/windows/IP_Subnet_Calculator.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,7 +140,7 @@ jobs:
       - name: Upload Ubuntu Artifact to Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
           files: artifacts/ubuntu/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -148,7 +148,7 @@ jobs:
       - name: Upload macOS Artifact to Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
           files: artifacts/macos/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

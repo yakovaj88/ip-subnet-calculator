@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout Repository
@@ -41,6 +41,13 @@ jobs:
           mv dist/app dist/IP_Subnet_Calculator
           chmod +x dist/IP_Subnet_Calculator
 
+      - name: Build Executable for macOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          pyinstaller --onefile app.py
+          mv dist/app dist/IP_Subnet_Calculator
+          chmod +x dist/IP_Subnet_Calculator
+
       - name: List files in dist for Windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -48,6 +55,11 @@ jobs:
 
       - name: List files in dist for Ubuntu
         if: matrix.os == 'ubuntu-latest'
+        run: |
+          ls -la dist
+
+      - name: List files in dist for macOS
+        if: matrix.os == 'macos-latest'
         run: |
           ls -la dist
 
@@ -63,6 +75,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: IP_Subnet_Calculator-ubuntu-latest
+          path: dist/IP_Subnet_Calculator
+
+      - name: Upload Artifact for macOS
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: IP_Subnet_Calculator-macos-latest
           path: dist/IP_Subnet_Calculator
 
   release:
@@ -81,11 +100,18 @@ jobs:
           name: IP_Subnet_Calculator-ubuntu-latest
           path: artifacts/ubuntu
 
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: IP_Subnet_Calculator-macos-latest
+          path: artifacts/macos
+
       - name: Upload Assets to Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator
+            artifacts/macos/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

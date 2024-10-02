@@ -129,13 +129,26 @@ jobs:
           echo "macOS Artifacts:"
           ls -la artifacts/macos
 
-      - name: Create GitHub Release and Upload Assets
+      - name: Upload Windows Artifact to Release
         uses: softprops/action-gh-release@v2
         with:
-          body: "Automated release with build artifacts."
-          files: |
-            artifacts/windows/IP_Subnet_Calculator.exe
-            artifacts/ubuntu/IP_Subnet_Calculator
-            artifacts/macos/IP_Subnet_Calculator
+          tag_name: ${{ github.ref }}
+          files: artifacts/windows/IP_Subnet_Calculator.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Ubuntu Artifact to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          files: artifacts/ubuntu/IP_Subnet_Calculator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload macOS Artifact to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          files: artifacts/macos/IP_Subnet_Calculator
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

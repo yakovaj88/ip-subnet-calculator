@@ -126,7 +126,7 @@ jobs:
           ls -la artifacts/macos
 
       - name: Create GitHub Release and Upload Assets
-        uses: softprops/action-gh-release@v1.3.0
+        uses: softprops/action-gh-release@v1
         with:
           body: "Automated release with build artifacts."
           files: |

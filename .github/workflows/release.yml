@@ -106,7 +106,7 @@ jobs:
           name: IP_Subnet_Calculator-macos-latest
           path: artifacts/macos
 
-      - name: Upload Assets to Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: |

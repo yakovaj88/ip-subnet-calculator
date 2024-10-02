@@ -1,8 +1,12 @@
 name: Create Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*.*.*"  # Триггер на пуш тегов вида v1.0.22
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -133,6 +137,5 @@ jobs:
             artifacts/windows/IP_Subnet_Calculator.exe
             artifacts/ubuntu/IP_Subnet_Calculator
             artifacts/macos/IP_Subnet_Calculator
-          allowUpdates: true
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
